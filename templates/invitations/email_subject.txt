@@ -1,0 +1,2 @@
+{% extends "base_email_subject.txt" %}
+{% block subject %}Invitation to join {{invitation.company.name}} on {{site_name}}{% endblock %}

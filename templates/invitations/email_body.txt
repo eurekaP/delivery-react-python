@@ -1,0 +1,13 @@
+{% extends "base_email.txt" %}
+{% block content %}
+You're receiving this email because you've been invited by {{ invitation.created_by.email }} to join {{ invitation.company.name }} on {{site_name}}.
+
+Please click on the following link to accept:
+{{ url_accept }}
+
+{% comment %}
+Or to reject please click here:
+{{ url_reject}}
+{% endcomment %}
+
+{% endblock %}

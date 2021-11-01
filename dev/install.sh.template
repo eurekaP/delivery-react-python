@@ -1,0 +1,279 @@
+#!/bin/bash
+
+## Make sure the script is run as root
+if [[ $EUID -ne 0 ]];
+then
+    error_exit "Root privileges are required to run the install script."
+fi
+
+## Set environment
+# Determine the directory where the install script is located.
+CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Load helper functions as os detection
+source ${CURR_DIR}/_install_lib.sh
+
+
+# ==== template variables rendered by the build procedure
+APP_VERSION="{app_version}"
+APP_NAME="{app_name}"
+APP_USER="{app_user}"
+STAFF_USERS="{staff_users}"
+USE_BASIC_HTTP_AUTH={use_basic_http_auth}
+REQUIRED_PACKAGES_UBUNTU="{required_packages_ubuntu}"
+REQUIRED_PACKAGES_ARCH="{required_packages_arch}"
+# ============================================
+
+
+# no trailing slash in below paths
+INSTALL_DIR=/home/${APP_USER}/${APP_NAME}
+VENV_DIR=${INSTALL_DIR}/venv
+
+# Leave this variable empty to not log anything at all.
+LOGFILE=${APP_NAME}-install.log
+
+# REQUIRED_PACKAGES is a space separated list of package names that need to be
+# installed before the app can be installed
+if [ $ARCH_DETECTED -eq 1 ]; then
+	REQUIRED_PACKAGES=${REQUIRED_PACKAGES_ARCH}
+else
+	REQUIRED_PACKAGES=${REQUIRED_PACKAGES_UBUNTU}
+fi
+
+# database configuration
+
+DB_NAME=${APP_NAME//-/_}
+DB_USER=${APP_USER}
+DB_PASSWD=${APP_USER}
+
+
+# tune for debug
+[ -n "$DEBUG" ] && set -x
+
+## Configuration
+# default values
+LOGFILE=${LOGFILE:-"$PWD/install.log"}
+INSTALL_DIR=${INSTALL_DIR:-"/home/${APP_USER}/${APP_NAME}/"}
+if [ $ARCH_DETECTED -eq 1 ]; then
+    DEFAULT_PYTHON="/usr/bin/python3"
+else
+    DEFAULT_PYTHON="/usr/bin/python3.8"
+fi
+PYTHON=${PYTHON:-"${DEFAULT_PYTHON}"}
+
+
+## Begin installation
+# Now we can begin the installation. First we will inform the user.
+cat << EOF
+###############################################################################
+This is about to install ${APP_NAME} version ${APP_VERSION}.
+
+For more details about the installation process, see the log in ${LOGFILE}
+
+The following packages are required and will be installed:
+    ${REQUIRED_PACKAGES}
+
+The ${APP_NAME} software will be installed under directory ${INSTALL_DIR}.
+
+${APP_NAME} will be configured to run under the following user: ${APP_USER}
+The PostgreSQL database user will be ${DB_USER}
+
+The installation will now start.
+###############################################################################
+EOF
+
+cat << EOF >> ${LOGFILE}
+===============================================================================
+${APP_NAME} installation started at $(/bin/date)
+===============================================================================
+Configuration:
+APP_VERSION=${APP_VERSION}
+INSTALL_DIR=${INSTALL_DIR}
+VENV_DIR=${VENV_DIR}
+LOGFILE=${LOGFILE}
+REQUIRED_PACKAGES=${REQUIRED_PACKAGES}
+APP_USER=${APP_USER}
+STAFF_USERS=${STAFF_USERS}
+DB_USER=${DB_USER}
+DB_PASSWD=${DB_PASSWD}
+DB_NAME=${DB_NAME}
+PYTHON=${PYTHON}
+===============================================================================
+EOF
+
+## Check user
+# Check if the user exists, and with the correct home directory
+# Create the user if necessary
+create_linux_user ${APP_USER}
+chmod g+rw /home/${APP_USER} -R
+find /home/${APP_USER} -type d -exec chmod g+srwx {} \;
+
+mkdir -p ${INSTALL_DIR}
+
+# make sure umask value is "002" in .bashrc
+if grep -qs "umask" /home/${APP_USER}/.bashrc
+then
+    print_info "Modifying umask in /home/${APP_USER}/.bashrc"
+    sed -i -- 's|umask 022|umask 002|g' /home/${APP_USER}/.bashrc
+else
+    print_info "Adding \"umask 002\" in /home/${APP_USER}/.bashrc"
+    echo "umask 002" >> /home/${APP_USER}/.bashrc
+fi
+
+## Requirements
+if test_dependencies ${REQUIRED_PACKAGES};
+then
+    print_info "All required packages are installed"
+else
+    if check_available_packages ${REQUIRED_PACKAGES};
+    then
+        # add elasticsearch repos for UBUNTU
+        if [ $ARCH_DETECTED -eq 0 ]; then
+            print_info "Adding elasticsearch repositories"
+            curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+            echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+        fi
+        pkg_install "${REQUIRED_PACKAGES}"
+    else
+        error_exit "Not all required packages can be installed."
+    fi
+fi
+
+## PostgreSQL setup
+# initdb
+print_info "##### PostgreSQL configuration"
+init_postgres
+
+print_info "Making sure that the PostgreSQL service is enabled and started"
+enable_service postgresql
+start_service postgresql
+
+fix_pg_hba
+
+## Create db user
+if pg_user_exists "${DB_USER}"
+then
+    print_info "PostgreSQL user '${DB_USER}' exists"
+else
+    print_info "Creating PostgreSQL user '${DB_USER}'"
+    run_query "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWD}';" >> ${LOGFILE}
+fi
+
+
+echo "Setting up database ${DB_NAME}"
+# some things are better done by "pgsetup.sh" command
+DBUSER=${DB_USER} DBNAME=${DB_NAME} ${CURR_DIR}/bin/pgsetup.sh >> ${LOGFILE}
+
+print_info "Initializing elasticsearch"
+init_elasticsearch
+
+
+#cp -rv * ${INSTALL_DIR}/ >> ${LOGFILE}
+print_info "Copying project files.."
+rsync -pavh --delete --exclude srv/log/ --exclude srv/public/ --exclude '*.pyc' --exclude install.sh --exclude venv $CURR_DIR/ ${INSTALL_DIR}/ >> ${LOGFILE}
+mkdir -p ${INSTALL_DIR}/srv/log
+
+SRV_DIR=/srv/${APP_NAME}
+if [ -e $SRV_DIR ]; then
+    print_info "Found existing symlink $SRV_DIR"
+else
+    print_info "Symlinking ${INSTALL_DIR} to $SRV_DIR"
+    ln -vs ${INSTALL_DIR} $SRV_DIR >> ${LOGFILE}
+fi
+
+
+## redis setup
+enable_service redis
+start_service redis
+
+fix_supervisord
+
+fix_nginx
+enable_service nginx
+start_service nginx
+
+## application setup
+print_info "##### ${APP_NAME} application setup"
+# recreate the virtualenv
+if [ -f ${VENV_DIR}/bin/activate ];
+then
+    print_info "Deleting existing virtual env ${VENV_DIR}."
+    rm -rfv ${VENV_DIR} >> ${LOGFILE}
+fi
+print_info "Creating python virtualenv"
+virtualenv -p ${PYTHON} ${VENV_DIR} >> ${LOGFILE}
+
+print_info "Installing requirements.txt"
+${VENV_DIR}/bin/pip install -r ${INSTALL_DIR}/requirements.txt >> ${LOGFILE}
+
+COMMON_HELPERS_VERSION=`hg identify ${VENV_DIR}/src/common-helpers`
+print_info "Installed version of common-helpers is ${COMMON_HELPERS_VERSION}"
+
+print_info "Creating log directory"
+mkdir -p ${INSTALL_DIR}/srv/log
+
+print_info "Migrating the ${DB_NAME} database"
+manage_py "migrate --noinput"
+
+#TODO: rebuild indexes only when changed by keeping hash of old index and compare with the new one
+print_info "Rebuilding elasticsearch indexes"
+manage_py "search_index --rebuild -f"
+
+print_info "Import nomenclatures"
+manage_py "import_vmrs ${INSTALL_DIR}/vmrs/csv_new/CK33.csv"
+manage_py "import_vmrs ${INSTALL_DIR}/vmrs/csv_new/CK34.csv"
+manage_py "import_vmrs ${INSTALL_DIR}/vmrs/csv_new/CK2.csv"
+manage_py "import_vmrs ${INSTALL_DIR}/vmrs/csv_new/CK16.csv"
+
+# Copy all static files to where STATIC_ROOT setting is pointing
+print_info "Copying static files"
+DJANGO_SETTINGS_MODULE=api.settings manage_py "collectstatic --noinput"
+DJANGO_SETTINGS_MODULE=admin.settings manage_py "collectstatic --noinput"
+
+print_info "Setting owner and permissions to ${INSTALL_DIR}"
+chown ${APP_USER}:${APP_USER} ${INSTALL_DIR} -R
+chmod g+rw ${INSTALL_DIR} -R
+find ${INSTALL_DIR} -type d -exec chmod g+srwx {} \;
+
+print_info "Adding staff users to ${APP_USER} group"
+for U in $STAFF_USERS
+do
+    user_exists=$(grep -c "^$U:" /etc/passwd)
+    if [ $user_exists -eq 0 ]; then
+        print_info "Skipping missing user $U"
+    else
+        print_info "Adding user ${U} to group ${APP_USER}"
+        usermod -aG ${APP_USER} ${U} >> $LOGFILE
+    fi
+done
+
+echo "Creating symlinks for etc files."
+symlink_supervisor_conf
+for NAME in api admin web ssl
+do
+    symlink_if_missing "${SRV_DIR}/srv/etc" "/etc/nginx/sites-available" "${APP_NAME}-${NAME}.nginx.conf"
+    symlink_if_missing "/etc/nginx/sites-available" "/etc/nginx/sites-enabled" "${APP_NAME}-${NAME}.nginx.conf"
+done
+
+if [ $USE_BASIC_HTTP_AUTH -eq 1 ]; then
+    print_info "Enabling basic http authentication"
+    sed -i -- 's|#auth_basic |auth_basic |g;s|#auth_basic_user_file |auth_basic_user_file |g' /srv/${APP_NAME}/srv/etc/${APP_NAME}-web.nginx.conf
+fi
+
+#print_info "Clearing previously created crontab entries for '${APP_USER}'"
+#crontab -u ${APP_USER} -r
+#print_info "Creating cron file for '${APP_USER}' user in /etc/cron.d/${APP_NAME}"
+#manage_py "gen_crontab -u ${APP_USER} -o /etc/cron.d/${APP_NAME}"
+#print_info "Restarting cron service"
+#restart_cron_service
+
+print_info "Starting ${APP_NAME} service"
+supervisorctl update >> ${LOGFILE}
+supervisorctl restart ${APP_NAME}:* ${APP_NAME}-rq:* >> ${LOGFILE}
+restart_service nginx
+
+echo "###############################################################################"
+print_info "The installation script has finished! Please check ${LOGFILE} for errors."
+echo "###############################################################################"
+
+# vim:ts=4:sw=4:expandtab

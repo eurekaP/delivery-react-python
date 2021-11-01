@@ -1,0 +1,11 @@
+{% extends "base_email.txt" %}
+
+{% block content %}
+You have successfully signed up for {{site_name}}.
+Please, click the button below to confirm your email address and log in.
+
+Note that this link will expire in 24 hours.
+
+{{ action_url }}
+
+{% endblock %}

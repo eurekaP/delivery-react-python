@@ -1,0 +1,18 @@
+syntax: glob
+tags
+LC_MESSAGES/*.mo
+*.py.orig
+*.pyc
+*.pyo
+*.py,cover
+client/.vscode\\*
+
+venv*
+dev/build/
+dev/dist/
+
+srv/public/
+srv/log/
+.*/node_modules
+client/zzz/
+dev/_files.txt

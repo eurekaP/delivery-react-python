@@ -1,0 +1,4 @@
+#!/bin/bash
+sudo supervisorctl signal HUP {app_name}:*
+sudo supervisorctl signal INT {app_name}-rq:*
+# vim:ts=4:sw=4:expandtab

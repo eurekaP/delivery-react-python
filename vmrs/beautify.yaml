@@ -1,0 +1,84 @@
+1:
+  title: "Equipment Vocation"
+2:
+  title: "Equipment Category"
+  codes:
+    "8": "Converters, Dollies, Tandem Axle Bogies, Attachable Trailing Axles"
+    "PE": "Paving Equipment"
+    "5": "Tractor-Trailer Combination"
+  duplicates:
+    "AL": "use_last"
+    "LT": "use_last"
+    "SC": "use_last"
+3:
+  title: "Axle Configuration"
+4:
+  title: "Cab type"
+5:
+  title: "Power Source"
+  codes:
+    "9": "Other"
+6:
+  title: "Horsepower"
+7:
+  title: "Transmission Type"
+  codes:
+    "3": "Semi-Automatic"
+8:
+  title: "Forward Transmission Speeds"
+10:
+  title: "Body type"
+11:
+  title: "DOT MC Specification"
+12:
+  title: "Trailer Height"
+13:
+  title: "Trailer Length"
+20:
+  title: "Status"
+  codes:
+    "01": "Active"
+    "12": "Available For Assignment"
+21:
+  title: "Out Of Service Tire  Condition"
+  duplicates:
+    "BS": "use_last"
+23:
+  title: "Tire Position"
+31:
+  title: "System"
+32:
+  title: "Assembly"
+33:
+  title: "Component"
+34:
+  title: "Manufacturer"
+  duplicates:
+    "HRMGL": "use_last"
+35:
+  title: "Engine Configuration"
+36:
+  title: "PTO"
+40:
+  title: "Brake System"
+48:
+  title: "Body Configuration"
+52:
+  title: "Part Status"
+64:
+  title: "Evaporator Mounting Type"
+66:
+  title: "Reefer Configuration"
+67:
+  title: "Special Features For Reefers"
+68:
+  title: "Cooling Capacity"
+79:
+  title: "Position"
+82:
+  title: "Vehicle Condition Report"
+83:
+  title: "Claim Response Reason"
+84:
+  title: "Claim Response Status"
+# vim:ts=4:sw=4:expandtab

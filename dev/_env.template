@@ -1,0 +1,34 @@
+APP_ENV={env}
+DEBUG=on
+DEBUG_SQL=off
+SECRET_KEY='5w8wc#9nsv8jg^8-r(4ban@yxh(!43rw3*0(l$@khzg#q&x!q@'
+DATABASE_URL=connectdb://connect:connect@127.0.0.1:5432/connect_{env}
+PROJECT_SITE_URL=https://{web_domain}
+
+ALLOWED_HOSTS={admin_domain},{api_domain}
+
+SENTRY_DSN="{sentrydsn}"
+REDIS_URL=redis://localhost:6379/{redisdb}
+CORS_ORIGIN_WHITELIST=https://{web_domain}
+GOOGLE_MAP_API_KEY='AIzaSyBuMjpxA_mnDaVPgSs6N7agDiswGLAk7lo'
+AUTH_PERMANENT_ACCESS={permanent_access}
+
+# temporarily until deployment fixed to install elastic
+#USE_ELASTIC_SEARCH=off
+USE_ELASTIC_SEARCH=on
+
+##################
+# Email settings
+#EMAIL_URL=filter+smtps://notify@resolve.bg:f66eb9d73e10a3c120f4a9978ed2077b@smtp.migadu.com:587
+#EMAIL_URL=nohtml+anymailconsole://mailer@host.com:secret-password@smtp.mailserver.com:587
+EMAIL_URL=filter+queue+anymailpostmark://info@fleetpal.io:{postmark_api_token}@smtp.dummyserver.com
+EMAIL_SUBJECT_PREFIX={email_subject_prefix}
+EMAIL_WEBHOOK_SECRET={email_webhook_secret}
+
+# To use these, you must prepend EMAIL_URL with 'filter+' e.g. EMAIL_URL=filter+<whatever the email backend url>
+EMAIL_FILTER_LOGIC=and
+{set_emails_staff_only}
+{set_emails_whitelist}
+
+
+{set_media_root}

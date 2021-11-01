@@ -1,0 +1,101 @@
+[program:{app_name}-api]
+command=/srv/{app_name}/venv/bin/gunicorn wsgi:application 
+    --bind unix:/tmp/{app_name}-api.sock  
+    --pid /tmp/{app_name}-api.pid
+    --workers {api_workers_count}
+    --access-logfile /srv/{app_name}/srv/log/api_gunicorn_access.log
+    --error-logfile /srv/{app_name}/srv/log/api_gunicorn_error.log
+    --worker-class eventlet 
+#    --max-requests 200
+directory=/srv/{app_name}/
+user={app_user}
+umask=002
+stdout_logfile=/srv/{app_name}/srv/log/api_supervisor_stdout.log
+stderr_logfile=/srv/{app_name}/srv/log/api_supervisor_stderr.log
+autostart=true
+autorestart=true
+redirect_stderr=true
+environment=PATH="/srv/{app_name}/venv/bin", DJANGO_SETTINGS_MODULE="api.settings", PYTHONUNBUFFERED=TRUE
+
+
+[program:{app_name}-admin]
+command=/srv/{app_name}/venv/bin/gunicorn wsgi:application 
+    --bind unix:/tmp/{app_name}-admin.sock  
+    --pid /tmp/{app_name}-admin.pid
+    --workers {admin_workers_count}
+    --access-logfile /srv/{app_name}/srv/log/admin_gunicorn_access.log
+    --error-logfile /srv/{app_name}/srv/log/admin_gunicorn_error.log
+    --worker-class eventlet 
+#    --max-requests 200
+directory=/srv/{app_name}/
+user={app_user}
+umask=002
+stdout_logfile=/srv/{app_name}/srv/log/admin_supervisor_stdout.log
+stderr_logfile=/srv/{app_name}/srv/log/admin_supervisor_stderr.log
+autostart=true
+autorestart=true
+redirect_stderr=true
+environment=PATH="/srv/{app_name}/venv/bin", DJANGO_SETTINGS_MODULE="admin.settings"
+
+
+[program:{app_name}-rq-high]
+command=/srv/{app_name}/venv/bin/python /srv/{app_name}/manage.py rqworker high --pid /tmp/{app_name}-rqworker-high.pid
+directory=/srv/{app_name}/
+user={app_user}
+umask=002
+stdout_logfile=/srv/{app_name}/srv/log/rq_high_supervisor_stdout.log
+stderr_logfile=/srv/{app_name}/srv/log/rq_high_supervisor_stderr.log
+autostart=true
+autorestart=true
+redirect_stderr=true
+process_name={app_name}-rq-high-%(process_num)s
+numprocs={rq_high_workers_count}
+startsecs=10
+stopsignal=TERM
+stopwaitsecs = 60
+killasgroup=true
+
+[program:{app_name}-rq-default]
+command=/srv/{app_name}/venv/bin/python /srv/{app_name}/manage.py rqworker high default --pid /tmp/{app_name}-rqworker-default.pid
+directory=/srv/{app_name}/
+user={app_user}
+umask=002
+stdout_logfile=/srv/{app_name}/srv/log/rq_default_supervisor_stdout.log
+stderr_logfile=/srv/{app_name}/srv/log/rq_default_supervisor_stderr.log
+autostart=true
+autorestart=true
+redirect_stderr=true
+process_name={app_name}-rq-default-%(process_num)s
+numprocs={rq_default_workers_count}
+startsecs=10
+stopsignal=TERM
+stopwaitsecs = 60
+killasgroup=true
+
+[program:{app_name}-rq-low]
+command=/srv/{app_name}/venv/bin/python /srv/{app_name}/manage.py rqworker high default low --pid /tmp/{app_name}-rqworker-low.pid
+directory=/srv/{app_name}/
+user={app_user}
+umask=002
+stdout_logfile=/srv/{app_name}/srv/log/rq_low_supervisor_stdout.log
+stderr_logfile=/srv/{app_name}/srv/log/rq_low_supervisor_stderr.log
+autostart=true
+autorestart=true
+redirect_stderr=true
+process_name={app_name}-rq-low-%(process_num)s
+numprocs={rq_low_workers_count}
+startsecs=10
+stopsignal=TERM
+stopwaitsecs = 60
+killasgroup=true
+
+
+[group:{app_name}-rq]
+programs={app_name}-rq-high,{app_name}-rq-default,{app_name}-rq-low
+
+
+[group:{app_name}]
+programs={app_name}-api,{app_name}-admin
+
+
+# vim:ts=4:sw=4:expandtab

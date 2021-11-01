@@ -1,0 +1,8 @@
+server {
+    listen         80;
+    listen         [::]:80;
+    server_name    {api_domain} {web_domain} {admin_domain};
+    return         301 https://$host$request_uri;
+}
+
+# vim:ts=4:sw=4:expandtab

@@ -1,0 +1,78 @@
+{% extends 'base_email.html' %}
+
+{% block content%}
+<h1 style="font-family: 'Roboto', sans-serif; margin-top: 0; margin-bottom: 32px; color: #3b507d; font-size: 34px; font-weight: normal; text-align: left; letter-spacing: 0.25px;  line-height: 1.24;">
+    Welcome, {{ user.get_full_name }}!
+</h1>
+
+<font color="#3b507d" face="'Roboto', sans-serif" size="16px" style="color: #3b507d; font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.5; letter-spacing: 0.15px;" >
+  To finish the sign up process, please click on the button below.
+</font>
+
+<!-- Action -->
+<table
+  class="body-action"
+  style="width: 100%; margin: 32px auto 32px; padding: 0; -premailer-width: 100%; -premailer-cellpadding: 0; -premailer-cellspacing: 0; text-align: center;"
+  width="100%"
+  cellspacing="0" cellpadding="0" align="center">
+  <tbody>
+    <tr>
+      <td
+        style="word-break: break-word; font-family: 'Roboto', sans-serif; font-size: 16px;"
+        align="center">
+        <a class="button"
+          style="font-weight: 500; font-size: 15px; line-height: 24px; letter-spacing: 0.46px; color: #FFF; background-color: #2979ff; border-top: 8px solid #2979ff; border-right:16px solid #2979ff; border-bottom: 8px solid #2979ff; border-left: 16px solid #2979ff; display: inline-block; text-decoration: none; border-radius: 4px; -webkit-text-size-adjust: none; box-sizing: border-box;"
+          href="{{action_url}}" target="_blank">
+          CONFIRM EMAIL ADDRESS
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- <p style="margin: 0.4em 0 1.1875em; font-size: 16px; line-height: 1.625; color: #51545E;">
+In case you didn't request this procedure, please ignore this message or contact us.
+</p> -->
+
+<font style="margin: 0; font-size: 16px; line-height: 24px; letter-spacing: 0.15px; color: #3b507d; font-family: 'Roboto', sans-serif;" face="'Roboto', sans-serif" color="#3b507d" size="16px">
+  <b>Note that this link will expire in 24 hours.</b>
+</font>
+
+<table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+      <td style="padding-bottom: 32px;">
+
+      </td>
+  </tr>
+</table>
+
+<font color="#3b507d" face="'Roboto', sans-serif" size="16px" style="color: #3b507d; font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.5; letter-spacing: 0.15px;" >
+  In case you didn’t initiate this sign up, please ignore this message or contact us.
+</font>
+
+<table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+      <td style="padding-bottom: 32px;">
+
+      </td>
+  </tr>
+</table>
+
+<font color="#3b507d" face="'Roboto', sans-serif" size="16px" style="color: #3b507d; font-family: 'Roboto', sans-serif; font-size: 16px; line-height: 1.5; letter-spacing: 0.15px;" >
+  Sincerely, <br/>
+  The Fleetpal Team
+</font>
+
+<table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+      <td style="padding-bottom: 5px;">
+
+      </td>
+  </tr>
+</table>
+
+{% endblock content%}
+
+{% block link_text %}
+  In case the above button does not work, please open link below in your web browser
+{% endblock %}

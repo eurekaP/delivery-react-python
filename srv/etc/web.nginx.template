@@ -1,0 +1,32 @@
+server {
+    listen      443 ssl;
+    listen      [::]:443 ssl;
+
+    server_name {web_domain};
+    charset     utf-8;
+
+    ssl_certificate /etc/letsencrypt/live/{web_cert}/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/{web_cert}/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+    # tell the browser we only accept https instead of http 
+    add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains';
+
+    # Deny illegal Host headers
+    if ($host !~* ^({web_domain})$) {
+        return 444;
+    }
+
+    root /srv/{app_name}/client/build;
+    index index.html;
+    location / {
+        #auth_basic "{app_name} area";
+        #auth_basic_user_file /srv/{app_name}/srv/etc/htpasswd;
+        try_files $uri /index.html;
+    }
+    access_log /srv/{app_name}/srv/log/web_nginx_access.log; 
+    error_log /srv/{app_name}/srv/log/web_nginx_error.log;
+}
+
+# vim:ts=4:sw=4:expandtab

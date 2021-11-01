@@ -1,0 +1,36 @@
+-e hg+https://fleetpal:Eod0ei9z@hg.resolve.bg/resolve/common-helpers@default#egg=common_helpers  # collection of usable helpers
+pip-tools
+flake8
+psycopg2-binary
+reportlab               # make pdf files
+ijson                   # iterative json parser; for loaddata of huge json fixtures ; common_helpers/django/iterative_json
+
+gunicorn                # wsgi app server
+eventlet==0.30.2                # optionally needed for eventlet gunicorn workers 
+sentry-sdk              # stream logs to sentry for aggregation
+
+django                  # the web framework 
+django-extensions       # handy commands /shellplus/ and helpers for django
+django-waffle           # feature flags
+django-environ          # load config from env variables
+django-map-widgets      # show geo map in admin for repair shop location
+django-anymail[postmark] # send mails via one of supported mail services
+django-cors-headers     # CORS support for the api
+django-rest-framework
+django-filter
+django-crispy-forms
+drf-extensions
+dj-rest-auth[with_social]
+django-phonenumber-field[phonenumbers]
+
+#huey                    # deferred tasks in redis queue
+rq
+django-rq
+django-rq-email-backend
+
+redis                   # needed by huey for task queues
+pyyaml                  # vmrs beautify
+django_elasticsearch_dsl
+graphene-django
+
+# vim:ts=4:sw=4:expandtab

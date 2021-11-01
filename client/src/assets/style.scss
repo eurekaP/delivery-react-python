@@ -1,0 +1,25 @@
+@import '../berry/assets/scss/themes-vars.module.scss';
+
+.MuiLink-root {
+  font-weight: 400;
+  color: $grey900;
+  text-decoration: none;
+
+  &:hover {
+    color: $primaryDark;
+    text-decoration: none;
+    transform: none;
+  }
+
+  &:active {
+    text-decoration: none;
+    box-shadow: none;
+  }
+
+  &:disabled,
+  &.disabled {
+    color: $grey600;
+    pointer-events: none;
+  }
+}
+

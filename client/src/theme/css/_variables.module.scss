@@ -1,0 +1,267 @@
+$bg-gray: #f6f8fb;
+$white: #fff;
+
+// grey
+$grey-50: #e9ecf2;
+$grey-100: #c9d0de;
+$grey-200: #a5b1c8;
+$grey-300: #8191b1;
+$grey-400: #667aa1;
+$grey-500: #4b6290;
+$grey-600: #445a88;
+$grey-700: #3b507d;
+$grey-800: #334673;
+$grey-900: #233461;
+
+// blue
+$blue-50: #e5efff;
+$blue-100: #bfd7ff;
+$blue-200: #94bcff;
+$blue-300: #69a1ff;
+$blue-400: #498dff;
+$blue-500: #2979ff;
+$blue-600: #2471ff;
+$blue-700: #1f66ff;
+$blue-800: #195cff;
+$blue-900: #0f49ff;
+
+// red
+$red-50: #fde8e8;
+$red-100: #fbc5c5;
+$red-200: #f99f9f;
+$red-300: #f67979;
+$red-400: #f45c5c;
+$red-500: #f23f3f;
+$red-700: #ee3131;
+$red-600: #f03939;
+$red-800: #ec2929;
+$red-900: #e81b1b;
+
+// light green
+$light-green-50: #e4f9f1;
+$light-green-100: #bcf0dd;
+$light-green-200: #8fe6c6;
+$light-green-300: #62dcaf;
+$light-green-400: #40d59d;
+$light-green-500: #1ecd8c;
+$light-green-600: #1ac884;
+$light-green-700: #16c179;
+$light-green-800: #12ba6f;
+$light-green-900: #0aae5c;
+
+// deep red
+$deep-red-50: #f6e7e7;
+$deep-red-100: #e8c3c3;
+$deep-red-200: #d99b9b;
+$deep-red-300: #ca7272;
+$deep-red-400: #be5454;
+$deep-red-500: #b33636;
+$deep-red-600: #ac3030;
+$deep-red-700: #a32929;
+$deep-red-800: #9a2222;
+$deep-red-900: #8b1616;
+$deep-red-a-50: #ffdfdf;
+$deep-red-a-100: #ffc0c0;
+$deep-red-a-400: #ff5a5a;
+$deep-red-a-700: #ff4141;
+
+// orange
+$orange-50: #fff1e0;
+$orange-100: #feddb3;
+$orange-200: #fdc680;
+$orange-300: #fcaf4d;
+$orange-400: #fc9d26;
+$orange-600: #fa8400;
+$orange-500: #fb8c00;
+$orange-700: #fa7900;
+$orange-800: #f96f00;
+$orange-900: #f85c00;
+
+// primary
+$primary-light: $blue-400;
+$primary-main: $blue-500;
+$primary-dark: $blue-700;
+$primary-contrast-text: $white;
+
+// secondary
+$secondary-light: $grey-400;
+$secondary-main: $grey-500;
+$secondary-dark: $grey-700;
+$secondary-contrast-text: $white;
+
+// error
+$error-light: $red-200;
+$error-main: $red-900;
+$error-dark: #d80808;
+$error-contrast-text: $white;
+
+// success
+$success-light: $light-green-200;
+$success-main: $light-green-500;
+$success-dark: $light-green-900;
+$success-contrast-text: $white;
+
+// warning
+$warning-light: $orange-200;
+$warning-main: $orange-500;
+$warning-dark: $orange-900;
+$warning-contrast-text: $grey-700;
+
+// info
+$info-light: $blue-200;
+$info-main: $blue-500;
+$info-dark: $blue-900;
+$info-contrast-text: $white;
+
+// default - custom
+$default-light: $grey-100; // random
+$default-main: $grey-300;
+$default-dark: $grey-500; // random
+
+$action-button-disabled: $grey-50;
+$text-disabled: $grey-200;
+$text-main: $grey-900;
+$text-secondary: $grey-500;
+
+$table-header-main: #f4f8ff;
+
+// others
+$other-tooltip: $grey-900;
+
+:export {
+    // primary
+    primaryLight: $primary-light;
+    primaryMain: $primary-main;
+    primaryDark: $primary-dark;
+    primaryContrastText: $primary-contrast-text;
+
+    // secondary
+    secondaryLight: $secondary-light;
+    secondaryMain: $secondary-main;
+    secondaryDark: $secondary-dark;
+    secondaryContrastText: $secondary-contrast-text;
+
+    // error
+    errorLight: $error-light;
+    errorMain: $error-main;
+    errorDark: $error-dark;
+    errorContrastText: $error-contrast-text;
+
+    //success
+    successLight: $success-light;
+    successMain: $success-main;
+    successDark: $success-dark;
+    successContrastText: $success-contrast-text;
+
+    // warning
+    warningLight: $warning-light;
+    warningMain: $warning-main;
+    warningDark: $warning-dark;
+    warningContrastText: $warning-contrast-text;
+
+    // info
+    infoLight: $info-light;
+    infoMain: $info-main;
+    infoDark: $info-dark;
+    infoContrastText: $info-contrast-text;
+
+    // default
+    defaultLight: $default-light;
+    defaultMain: $default-main;
+    defaultDark: $default-dark;
+
+    // gray
+    gray: $bg-gray;
+
+    // white
+    white: $white;
+
+    // grey
+    grey50: $grey-50;
+    grey100: $grey-100;
+    grey200: $grey-200;
+    grey300: $grey-300;
+    grey400: $grey-400;
+    grey500: $grey-500;
+    grey600: $grey-600;
+    grey700: $grey-700;
+    grey800: $grey-800;
+    grey900: $grey-900;
+
+    // blue
+    blue50: $blue-50;
+    blue100: $blue-100;
+    blue200: $blue-200;
+    blue300: $blue-300;
+    blue400: $blue-400;
+    blue500: $blue-500;
+    blue600: $blue-600;
+    blue700: $blue-700;
+    blue800: $blue-800;
+    blue900: $blue-900;
+
+    // red
+    red50: $red-50;
+    red100: $red-100;
+    red200: $red-200;
+    red300: $red-300;
+    red400: $red-400;
+    red500: $red-500;
+    red700: $red-700;
+    red600: $red-600;
+    red800: $red-800;
+    red900: $red-900;
+
+    // light green
+    lightGreen50: $light-green-50;
+    lightGreen100: $light-green-100;
+    lightGreen200: $light-green-200;
+    lightGreen300: $light-green-300;
+    lightGreen400: $light-green-400;
+    lightGreen500: $light-green-500;
+    lightGreen600: $light-green-600;
+    lightGreen700: $light-green-700;
+    lightGreen800: $light-green-800;
+    lightGreen900: $light-green-900;
+
+    // deep red
+    deepRed60: $deep-red-50;
+    deepRed100: $deep-red-100;
+    deepRed200: $deep-red-200;
+    deepRed300: $deep-red-300;
+    deepRed400: $deep-red-400;
+    deepRed500: $deep-red-500;
+    deepRed600: $deep-red-600;
+    deepRed700: $deep-red-700;
+    deepRed800: $deep-red-800;
+    deepRed900: $deep-red-900;
+    deepRedA50: $deep-red-a-50;
+    deepRedA100: $deep-red-a-100;
+    deepRedA400: $deep-red-a-400;
+    deepRedA700: $deep-red-a-700;
+
+    // orange
+    orange50: $orange-50;
+    orange100: $orange-100;
+    orange200: $orange-200;
+    orange300: $orange-300;
+    orange400: $orange-400;
+    orange500: $orange-600;
+    orange600: $orange-500;
+    orange700: $orange-700;
+    orange800: $orange-800;
+    orange900: $orange-900;
+
+    actionButtonDisabled: $action-button-disabled;
+    textDisabled: $text-disabled;
+    textMain: $text-main;
+    textSecondary: $text-secondary;
+	soldMain: #9429ff;
+	lostMain: #f23fa0;
+	emptyMain: rgba(75, 98, 144, 0.3);
+
+	tableHeaderMain: $table-header-main;
+
+    // others
+    otherTooltip: $other-tooltip;
+}

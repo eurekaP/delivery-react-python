@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+@import "./variables.module";
+
+a.MuiTypography-root {
+    color: $primary-main;
+    text-decoration: none;
+}
+
+html body { 
+	background-color: $bg-gray;
+}
+
+input {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    filter: none;
+    border: 0;
+
+    &::-ms-reveal,
+    &::-ms-clear {
+        display: none;
+    }
+
+    // &:-webkit-autofill {
+    //     &, &:hover, &:focus, &:active {
+    //         -webkit-box-shadow: 0 0 0 30px white inset !important;
+    //         -webkit-text-fill-color: $grey-400;
+    //         color: red;
+    //     }
+    //     &::first-line {
+    //         font-size: 16px;
+    //         line-height: 1.5;
+    //         letter-spacing: 0.15px;
+    //         font-weight: normal;
+    //         font-stretch: normal;
+    //         font-style: normal;
+    //         font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    //     }
+    // }
+}
+
+
+.reference-input-min-width-equipment-category {
+    min-width: 23ex;
+}
+
+.reference-input-min-width-manufacturer {
+    min-width: 17ex;
+}
+
+.image-field-4-list > img {
+    max-width: 20ex;
+    max-height: 10ex;
+}
+
+.server-errors {
+    border-radius: 4px;
+    margin-bottom: 38px;
+    padding: 18px 15px 17px;
+    background-color: $red-50; 
+}

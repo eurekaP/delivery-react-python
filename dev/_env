@@ -1,0 +1,18 @@
+APP_ENV=development
+DEBUG=on
+DEBUG_SQL=off
+TIME_ZONE=Europe/Sofia
+
+SECRET_KEY='5w8wc#9nsv8jg^8-r(4ban@yxh(!43rw3*0(l$@khzg#q&x!q@'
+DATABASE_URL=connectdb://connect:connect@127.0.0.1:5432/connect
+
+REDIS_URL=redis://localhost:6379/0
+
+##################
+# Email settings
+EMAIL_URL=nohtml+anymailconsole://mailer@host.com:secret-password@smtp.mailserver.com:587
+
+CORS_ORIGIN_WHITELIST=http://localhost,http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,http://localhost:3004,http://localhost:3005,http://localhost:3006,http://localhost:3007,http://localhost:3008,http://localhost:3009,http://localhost:3010
+
+PROJECT_SITE_URL=http://localhost:3000
+USE_ELASTIC_SEARCH=on

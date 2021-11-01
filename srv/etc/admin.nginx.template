@@ -1,0 +1,47 @@
+upstream {app_name}_admin {
+    server unix:/tmp/{app_name}-admin.sock fail_timeout=0;
+}
+server {
+    listen      443 ssl;
+    listen      [::]:443 ssl;
+    server_name {admin_domain};
+    charset     utf-8;
+
+    ssl_certificate /etc/letsencrypt/live/{admin_cert}/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/{admin_cert}/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+    # tell the browser we only accept https instead of http 
+    add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains';
+
+    # max upload size
+    client_max_body_size 10M;
+
+    access_log /srv/{app_name}/srv/log/admin_nginx_access.log; 
+    error_log /srv/{app_name}/srv/log/admin_nginx_error.log;
+
+    # Deny illegal Host headers
+    if ($host !~* ^({admin_domain})$) {
+        return 444;
+    }
+
+    location /media {
+        alias /srv/{app_name}/srv/public/media;
+    }
+    location /static {
+        alias /srv/{app_name}/srv/public/static;
+    }
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $host;
+        proxy_redirect off;
+        if (!-f $request_filename) {
+            proxy_pass http://{app_name}_admin;
+            break;
+        }
+    }
+}
+
+# vim:ts=4:sw=4:expandtab

@@ -1,0 +1,11 @@
+pgsetup:
+
+psql -U postgres -c "CREATE USER connect WITH PASSWORD 'connect' "
+psql -U postgres -c "ALTER USER connect CREATEDB"
+psql -U postgres -c "CREATE DATABASE connect OWNER connect"
+psql -U postgres connect < C:\Workplace\connect\bin\pgsetup.sql
+
+django:
+
+manage.py migrate
+
